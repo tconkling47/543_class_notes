@@ -1,0 +1,8 @@
+"0","collegetypes <- college_scorecard_19_20 %>%"
+"0","  mutate("
+"0","    type = case_when(CONTROL==1    ~ 'Public'"
+"0","                     ,CONTROL==2 & RELAFFIL=='NULL' ~ 'Non-Profit'"
+"0","                     , CONTROL==2 & RELAFFIL!='NULL'      ~ 'Religious'"
+"0","                     , CONTROL==3     ~ 'For-Profit')"
+"0","  ) %>%"
+"0","  select(INSTNM, STABBR, type)"

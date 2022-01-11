@@ -1,0 +1,6 @@
+"0","```r
+#base GGPLOT2 starts with a \"base\", telling WHAT VARIABLES TO PLOT
+base= ggplot(data = tableFreq, 
+             aes(x = Locale,
+                 y = Count)) 
+```"

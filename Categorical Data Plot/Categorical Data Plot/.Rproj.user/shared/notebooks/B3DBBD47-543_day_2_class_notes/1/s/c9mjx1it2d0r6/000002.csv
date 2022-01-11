@@ -1,0 +1,8 @@
+"0","```r
+# calling \"element_blank()\"
+lolliplot5 = lolliplot4 + theme(axis.ticks.y = element_blank(),
+                                axis.title.y = element_blank(),
+                                axis.line.y = element_blank(),
+                                axis.text.y = element_blank())
+lolliplot5
+```"

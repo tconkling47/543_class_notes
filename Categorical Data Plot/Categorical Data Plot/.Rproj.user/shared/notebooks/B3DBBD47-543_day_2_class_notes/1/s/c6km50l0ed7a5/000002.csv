@@ -1,0 +1,5 @@
+"0","```r
+eduwa$Free.LunchGroup=cut(eduwa$Free.Lunch,
+                          breaks = c(0,100, 250, 500,1000,2000),
+                          labels = c(\"100 and below\",\"101-250\",\"251-500\",\"501-1000\",\"1001 and above\"))
+```"

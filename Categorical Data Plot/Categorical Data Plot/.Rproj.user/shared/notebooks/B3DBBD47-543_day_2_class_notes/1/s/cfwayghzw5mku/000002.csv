@@ -1,0 +1,9 @@
+"0","```r
+lolliplot8 = lolliplot7 +  geom_label(aes(label=localesOrd),
+                                      color ='black ',
+                                      size =3,
+                                      y=0,
+                                      show.legend = FALSE ) +
+             theme(axis.text.x = element_blank())
+lolliplot8
+```"

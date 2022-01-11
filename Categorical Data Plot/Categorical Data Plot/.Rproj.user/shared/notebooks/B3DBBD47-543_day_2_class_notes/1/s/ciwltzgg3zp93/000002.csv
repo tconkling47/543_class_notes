@@ -1,0 +1,5 @@
+"0","```r
+# new variable
+tableFreq$gap=tableFreq$Percent-25
+tableFreq
+```"

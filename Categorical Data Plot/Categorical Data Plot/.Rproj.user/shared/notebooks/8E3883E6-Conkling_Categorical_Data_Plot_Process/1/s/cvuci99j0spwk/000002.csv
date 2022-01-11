@@ -1,0 +1,3 @@
+"0","base= ggplot(data = tableFreq, "
+"0","             aes(x = reorder(Type, -Count),"
+"0","                 y = Count)) "

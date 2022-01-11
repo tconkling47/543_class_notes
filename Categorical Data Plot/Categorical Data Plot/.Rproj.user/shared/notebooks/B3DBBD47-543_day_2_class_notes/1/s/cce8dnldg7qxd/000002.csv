@@ -1,0 +1,9 @@
+"0","```r
+table(eduwa$Free.LunchGroup)
+```"
+"1","
+ 100 and below        101-250        251-500 
+           790            840            448 
+      501-1000 1001 and above 
+           101             11 
+"

@@ -1,0 +1,6 @@
+"0","```r
+(localesOrd=tableFreq[order(tableFreq$Percent),'Locale'])
+```"
+"1","[1] Unknown Town    Rural   City    Suburb 
+Levels: City Rural Suburb Town Unknown
+"

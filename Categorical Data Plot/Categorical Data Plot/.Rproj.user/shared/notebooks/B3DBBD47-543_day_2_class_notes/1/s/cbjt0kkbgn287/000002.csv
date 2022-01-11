@@ -1,0 +1,5 @@
+"0","```r
+tableFreq=tableFreq[order(tableFreq$Percent),]
+# then:
+tableFreq
+```"

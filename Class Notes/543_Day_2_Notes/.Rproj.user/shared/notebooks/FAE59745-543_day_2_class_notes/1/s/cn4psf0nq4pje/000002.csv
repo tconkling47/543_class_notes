@@ -1,0 +1,7 @@
+"0","# more ""element_blank()"""
+"0",""
+"0","lolliplot6=lolliplot5 + theme(axis.ticks.x = element_blank(),"
+"0","                                axis.title.x = element_blank(),"
+"0","                                axis.line.x = element_blank()"
+"0","                              )"
+"0","lolliplot6 "

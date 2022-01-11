@@ -1,0 +1,9 @@
+"0","```r
+# boxplots do not use frequency tables
+
+# \"as.numeric\" produces turns levels of the factor into numbers
+basebox1 = ggplot(eduwa, aes(y=as.numeric(High.Grade))) 
+box1 = basebox1 + geom_boxplot() + coord_flip() # to show it horizontally
+
+box1
+```"

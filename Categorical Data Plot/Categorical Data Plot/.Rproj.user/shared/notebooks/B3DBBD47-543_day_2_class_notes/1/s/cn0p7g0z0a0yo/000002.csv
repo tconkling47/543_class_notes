@@ -1,0 +1,7 @@
+"0","```r
+#positions: 0 left / 1 right / 0.5 center
+plot5 = plot4 + 
+  theme(plot.caption = element_text(hjust = 0), 
+      plot.title = element_text(hjust = 0.5))
+plot5
+```"

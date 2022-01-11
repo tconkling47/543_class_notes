@@ -1,0 +1,10 @@
+"0","```r
+# relative values
+prop.table(absoluteT)
+```"
+"1","
+      City      Rural     Suburb       Town 
+0.29419036 0.20807581 0.32880099 0.13926658 
+      <NA> 
+0.02966625 
+"

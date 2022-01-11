@@ -1,0 +1,4 @@
+"0","```r
+lolliplot4 = lolliplot3 + geom_hline(yintercept = 0)
+lolliplot4
+```"

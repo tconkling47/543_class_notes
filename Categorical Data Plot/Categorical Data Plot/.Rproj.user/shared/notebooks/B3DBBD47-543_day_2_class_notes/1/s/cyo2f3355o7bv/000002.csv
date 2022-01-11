@@ -1,0 +1,10 @@
+"0","```r
+# createing labels:
+LABELS=paste0(round(tableFreq$Percent,2), '%')
+###
+plot6 = plot5 + geom_text(vjust=0, #hjust if flipping
+                          size = 5,
+                          aes(y = Percent ,
+                              label = LABELS))
+plot6#+ coord_flip() # wanna flip the plot?
+```"

@@ -1,0 +1,8 @@
+"0","```r
+propT=prop.table(absoluteT)*100
+#you get
+propT
+```"
+"1","     City     Rural    Suburb      Town   Unknown 
+29.419036 20.807581 32.880099 13.926658  2.966625 
+"

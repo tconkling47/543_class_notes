@@ -1,0 +1,3 @@
+"0","frqTabO=as.data.frame(prop.table(table(eduwa$High.Grade)))"
+"0","names(frqTabO)=c('grade','pct')"
+"0","frqTabO"

@@ -1,0 +1,34 @@
+"0","```r
+# redo:
+LABELS=paste0(round(tableFreq$Percent,2), '%')
+base= ggplot(data = tableFreq, 
+             aes(x = Locale,y = Percent)) 
+## adding these to base
+base= base + scale_x_discrete(limits=localesOrd) 
+base= base + theme_classic()
+##
+plot1 = base + geom_bar(fill =\"gray\",
+                        stat = 'identity') 
+plot2 = plot1 + labs(title=titleText,
+                     x =NULL, 
+                     y = NULL,
+                     caption = sourceText)
+plot3 = plot2 + geom_hline(yintercept = 25, 
+                           linetype=\"dashed\", 
+                           size=1.5, 
+                           alpha=0.5)
+plot4 = plot3 + scale_y_continuous(breaks=c(0,25,50),
+                                 limits = c(0, 50),
+                                 # expand = c(0, 0), #try?
+                            labels=unit_format(suffix = '%')) 
+
+plot5 = plot4 + theme(plot.caption = element_text(hjust = 0),
+                      plot.title = element_text(hjust = 0.5))
+
+
+plot6 = plot5 + geom_text(vjust=0, #hjust if flipping
+                          size = 6,#fontface = \"bold\",
+                          aes(y = Percent,
+                              label = LABELS))
+plot6 #+ coord_flip() # wanna flip the plot?
+```"

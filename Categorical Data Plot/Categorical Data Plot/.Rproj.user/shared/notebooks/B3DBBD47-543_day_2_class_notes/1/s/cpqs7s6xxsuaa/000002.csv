@@ -1,0 +1,14 @@
+"0","```r
+#familiar
+base = ggplot(tableFreq, aes(Locale,Percent))
+#by default, with aes, first value is X, second value is y. 
+base = base + theme_classic()
+base = base + scale_x_discrete(limits=localesOrd) 
+#new:geom_segment
+lolliplot1=base + geom_segment(aes(y = 0, 
+                                   x = Locale, 
+                                   yend = Percent, 
+                                   xend = Locale), 
+                               color = \"grey50\") 
+lolliplot1
+```"

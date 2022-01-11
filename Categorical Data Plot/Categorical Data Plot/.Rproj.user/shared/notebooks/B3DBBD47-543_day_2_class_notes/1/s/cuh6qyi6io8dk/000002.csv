@@ -1,0 +1,19 @@
+"0","```r
+base= ggplot(data = tableFreq, 
+             aes(x = Locale,
+                 y = Percent)) 
+
+plot1 = base + geom_bar(fill =\"gray\",
+                        stat = 'identity') 
+
+plot2 = plot1 + labs(title=titleText,
+                     x =NULL, 
+                     y = NULL,
+                     caption = sourceText)
+
+plot3 = plot2 + geom_hline(yintercept = 25, #where
+                           linetype=\"dashed\", 
+                           size=1.5, #thickness
+                           alpha=0.5) #transparency
+plot3
+```"

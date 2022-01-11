@@ -1,0 +1,7 @@
+"0","location='https://github.com/EvansDataScience/data/raw/master/'"
+"0","file='eduwa.rda'"
+"0","link=paste0(location,file) #The command paste0 is just combining pasting with both strings. those strings become the link"
+"0",""
+"0",""
+"0","#getting the data TABLE from the file in the cloud:"
+"0","load(file=url(link))"

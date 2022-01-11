@@ -1,0 +1,9 @@
+"0","```r
+head(eduwa$LocaleType,20) #first twenty values
+```"
+"1"," [1] Suburb City   City   Town   City   City  
+ [7] Suburb City   Rural  Rural  City   City  
+[13] City   City   Suburb Rural  Rural  Rural 
+[19] Suburb City  
+Levels: City Rural Suburb Town
+"

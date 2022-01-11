@@ -1,0 +1,4 @@
+"0","```r
+# as data frame
+(tableFreq=as.data.frame(absoluteT))
+```"

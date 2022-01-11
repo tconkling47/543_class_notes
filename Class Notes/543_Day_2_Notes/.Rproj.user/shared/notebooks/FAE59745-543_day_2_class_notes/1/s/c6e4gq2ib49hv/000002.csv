@@ -1,0 +1,7 @@
+"0","#renaming data frame columns."
+"0","names(tableFreq)=c(""Locale"",""Count"")"
+"0","#adding percents"
+"0","#add as.vector so ggplot doesn't complain later"
+"0","tableFreq$Percent=as.vector(propT)"
+"0","#then you have:"
+"0","tableFreq"

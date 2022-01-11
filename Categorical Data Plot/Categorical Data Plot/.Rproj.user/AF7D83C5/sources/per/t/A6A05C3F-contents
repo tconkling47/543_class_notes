@@ -1,0 +1,135 @@
+---
+title: "Conkling_Categorical_Data_Plot"
+output: html_notebook
+---
+
+#Load College Scorecard
+```{r}
+library(readxl)
+college_scorecard_19_20 <- read.csv("C:/Users/thoma/OneDrive/Desktop/543_coursework/Categorical Data Plot/college scorecard_19-20.csv")
+View(college_scorecard_19_20)
+```
+#Load Tidyverse
+```{r}
+library(tidyverse)
+```
+Isolate the data I want, with the names, cities, and institution types of all higher education institutions in the State of Washington
+```{r}
+wacollege <- college_scorecard_19_20 %>%
+  filter(STABBR=='WA') %>%
+  mutate(
+    type = case_when(CONTROL==1    ~ 'Public'
+                     ,CONTROL==2 & RELAFFIL=='NULL' ~ 'Non-Profit'
+                     , CONTROL==2 & RELAFFIL!='NULL'      ~ 'Religious'
+                     , CONTROL==3     ~ 'For-Profit')
+  ) %>%
+  select(INSTNM, CITY, type)
+```
+
+Isolate the data I want, with the names, states, and institution types of all higher education institutions in the united states
+```{r}
+collegetypes <- college_scorecard_19_20 %>%
+  mutate(
+    type = case_when(CONTROL==1    ~ 'Public'
+                     ,CONTROL==2 & RELAFFIL=='NULL' ~ 'Non-Profit'
+                     , CONTROL==2 & RELAFFIL!='NULL'      ~ 'Religious'
+                     , CONTROL==3     ~ 'For-Profit')
+  ) %>%
+  select(INSTNM, STABBR, type)
+```
+
+
+Create a frequency table
+```{r}
+# absolute values
+absoluteT=table(collegetypes$type,
+                exclude = 'nothing') #include all values!
+absoluteT
+#relative values:
+propT=prop.table(absoluteT)*100
+propT
+```
+
+Turn the frequency table into a data frame, name the variables
+```{r}
+tableFreq=as.data.frame(absoluteT)
+names(tableFreq)=c("Type", "Count")
+tableFreq$Percent=as.vector(propT)
+tableFreq
+```
+```{r}
+library(ggplot2)
+```
+
+Reorder the data frame in descending order
+```{r}
+tableFreq <- arrange(tableFreq, -Percent)
+tableFreq
+```
+
+
+Create plot base
+```{r}
+base= ggplot(data = tableFreq, 
+             aes(x = reorder(Type, -Count),
+                 y = Count)) 
+```
+
+
+```{r}
+#add a theme
+base = base + theme_classic()
+```
+
+
+
+Plot1
+```{r}
+plot1 = base + geom_bar(fill = "#B1CED0",
+                        stat = 'identity')
+plot1
+```
+
+#Adding the features I want to the plot
+```{r}
+titleText='What Types of Colleges are in the United States in 2020?'
+sourceText='Source: US Department of Education'
+
+plot2 = plot1 + labs(title=titleText,
+                     x =NULL, 
+                     y = 'Number of Institutions',
+                     caption = sourceText) 
+plot2
+
+```
+
+load scales
+```{r}
+library(scales)
+```
+
+```{r}
+#customize y axis
+plot3 = plot2 + scale_y_continuous(breaks=c(0,500,1000,1500,2000,2500),
+                                   limits = c(0,2600)
+                                    )
+#reposition text
+plot4 = plot3 + theme(plot.caption = element_text(hjust = 0),
+                      plot.title = element_text(hjust=0.5))
+plot4
+```
+
+```{r}
+#create labels for the bars
+LABELS=paste0(round(tableFreq$Percent,2), '%')
+
+plot5 = plot4 + geom_text(vjust=1.1, 
+                          size = 5,
+                          aes(y = Count,
+                              label = LABELS))
+plot5
+```
+
+
+
+

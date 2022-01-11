@@ -1,0 +1,5 @@
+"0","```r
+plot1 = base + geom_bar(fill = \"gray\",
+                        stat = 'identity')
+plot1
+```"

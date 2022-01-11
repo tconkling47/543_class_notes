@@ -1,0 +1,4 @@
+"0","tableFreq=as.data.frame(absoluteT)"
+"0","names(tableFreq)=c(""Type"", ""Count"")"
+"0","tableFreq$Percent=as.vector(propT)"
+"0","tableFreq"

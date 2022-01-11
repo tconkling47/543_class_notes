@@ -1,0 +1,4 @@
+"0","```r
+base = ggplot(frqTabO,aes(x=grade,y=pct))
+base + geom_bar(stat = 'identity')
+```"

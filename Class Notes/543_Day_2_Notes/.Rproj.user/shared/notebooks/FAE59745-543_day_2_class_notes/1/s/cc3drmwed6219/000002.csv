@@ -1,0 +1,6 @@
+"0","#customize Y axis"
+"0","plot4 = plot3 + "
+"0","  scale_y_continuous(breaks=c(0,10, 25,40),"
+"0","        limits = c(0, 40), "
+"0","        labels=unit_format(suffix = '%')) "
+"0","plot4"

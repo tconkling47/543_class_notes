@@ -1,0 +1,12 @@
+"0","```r
+names(eduwa)
+```"
+"1"," [1] \"NCES.School.ID\"        \"State.School.ID\"       \"NCES.District.ID\"     
+ [4] \"State.District.ID\"     \"Low.Grade\"             \"High.Grade\"           
+ [7] \"School.Name\"           \"District\"              \"County\"               
+[10] \"Street.Address\"        \"City\"                  \"State\"                
+[13] \"ZIP\"                   \"ZIP.4-digit\"           \"Phone\"                
+[16] \"Locale.Code\"           \"LocaleType\"            \"LocaleSub\"            
+[19] \"Charter\"               \"Title.I.School\"        \"Title.1.School.Wide\"  
+[22] \"Student.Teacher.Ratio\" \"Free.Lunch\"            \"Reduced.Lunch\"        
+"

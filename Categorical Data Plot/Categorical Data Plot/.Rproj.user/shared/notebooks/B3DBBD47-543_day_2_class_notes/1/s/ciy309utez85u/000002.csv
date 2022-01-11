@@ -1,0 +1,11 @@
+"0","```r
+#adding titles
+titleText='Where are Public Schools located in WA in 2019?'
+sourceText='Source: US Department of Education'
+
+plot2 = plot1 + labs(title=titleText,
+                     x =NULL, 
+                     y = NULL,
+                     caption = sourceText) 
+plot2
+```"

@@ -1,0 +1,18 @@
+"0","```r
+# add new aesthetics 'color'
+base = ggplot(tableFreq, aes(x=Locale,
+                             y=gap,
+                             color=PositiveGap))#here 
+base = base + theme_classic()
+base= base + scale_x_discrete(limits=localesOrd)
+
+lolliplot1=base + geom_segment(aes(y = 0, 
+                                   yend = gap, 
+                                   x = Locale, 
+                                   xend = Locale), 
+                               color = \"gray\") 
+ 
+lolliplot2 = lolliplot1 + geom_point()
+
+lolliplot2
+```"

@@ -1,0 +1,4 @@
+"0","```r
+#the pie plots the table:
+pie(absoluteT)
+```"

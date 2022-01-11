@@ -1,0 +1,8 @@
+"0","```r
+summary(eduwa$Free.Lunch)
+```"
+"1","   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+    0.0    52.0   140.0   179.4   245.2  1766.0 
+   NA's 
+    131 
+"

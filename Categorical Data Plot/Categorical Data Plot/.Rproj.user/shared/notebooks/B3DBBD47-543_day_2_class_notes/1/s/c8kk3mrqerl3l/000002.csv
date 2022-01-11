@@ -1,0 +1,11 @@
+"0","```r
+# absolute values
+absoluteT=table(eduwa$LocaleType,
+                exclude = 'nothing') #include all values!
+#here you are:
+absoluteT
+```"
+"1","
+  City  Rural Suburb   Town   <NA> 
+   714    505    798    338     72 
+"

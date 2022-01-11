@@ -1,0 +1,565 @@
+---
+title: "Day 2 class notes"
+output: html_notebook
+---
+
+Tabular data is the most common data type--most of the time, do some type of thing. 
+
+this situation, find what dat u need, use code, there are forms of data for no-tables,but those are for special things like network analysis, etc
+
+u are responsible for finding the data type for your columns, every time we think about column, it is the same type--rows are different types. row is a record (observation). 
+
+you have to check what the data type is. In general, we can can 
+
+categorical data, quantitative data.
+
+we will have a look at categorical data.
+
+howeve, when we talk about text, when we find text, we usually dont do statistics on text, thats why u call in sometimes, key, colum where values do not repeat. You dont do statistics related tothhem, some columns like a text message can still be analyzed. u are not rly doing statisitcs, u are counting thigns. trying to recognize some particular sentiment in the langauge. good or bad. It is a work in progress, nonetheless. 
+
+```{r getData, eval=TRUE}
+location='https://github.com/EvansDataScience/data/raw/master/'
+file='eduwa.rda'
+link=paste0(location,file) #The command paste0 is just combining pasting with both strings. those strings become the link
+
+
+#getting the data TABLE from the file in the cloud:
+load(file=url(link))
+```
+
+location is the location where the file is in github
+the filename is the name of the file in the location
+you dont need to do this, you can do everything in one line.
+if you are gonna work in seeral times in repo, you might want to save name of repo and just change name in one file.
+the less you change when u are coding, u lower the risk of mistyping.
+The command paste0 is just combining pasting with both strings. those strings become the link
+
+in this case it is an rda file, which means i is a file created in r itself. whenever u have that kind of file, u can just use link. in general, r assngns, a file to an object. load command is not assingng to anything. the name eduwa is going to be the object
+
+```{r}
+names(eduwa)
+#names command gets you the names of all of the variables (columns) in the object
+```
+ pay atention, R can change the names to the variables/columns.
+ 
+ really, in excel, aren't many restrictions to what you type in a spreadsheet, can be anything.
+ if for some reason u open the file, r says--this is not a dataframe, or column names aren't good, R may make some changes. a number at the beginning is not acceptable, it might change it. it acceps name1 but not 1name. ***
+ 
+ you cannot have rpated names you may have x and y and z
+ 
+ u have to be sure how R read your data, those are the filenames. in this situation, there are no spaces. whatever was a space was replaced by a dot, its one choice, could be _, could be a -, 
+ 
+now we gonna find data types
+
+```{r dataSTR, eval=TRUE}
+# this 'width = 70,strict.width='cut' means
+# you do not want to see more than 70 characters per row.
+
+str(eduwa,width = 70,strict.width='cut')
+```
+he gave us a clean dataset, he made sure it was ordinal, in district, maybe r might have red it as an integer value, but he made sure it was a text. this file has been pre-processed.
+
+u dunno how r is gonna understand it, use this command after upload, if you see a chr when i should be int, you should change it, you can ask prof if you dont kno how to change it.
+
+1 column should just be 1 data type, if in excel, whenever u dont have a value, u write a dash or an x, when R reads in the data, everything will be considered as a character. you just leave it empty in general. if u use a differnt symbol, u might be in trouble.. thats not always the case, if u download data from UN, maybe they have different vals.
+
+there are different libraries that read data from excel.
+
+categorical data are the output of a classifiction process. the calssificaton can propose an incrememnetal or on-incremental differentiation. INCREMENTAL data are ordinal. non-incremental are nominal data
+
+sometimes, the data is coded, 1-2-3 could be a nominal data, 1 means north, 2 means west, 3 means east....
+
+if u are all doctors, for this variable we can use more complicated things. when u are presenting, u dont have time to know what a certain plot means.
+
+
+Visualization for nominal tables
+
+we have names of these, nominal and ordinal
+
+```{r}
+head(eduwa$LocaleType,20) #first twenty values
+```
+
+let's do a simple frequency table:
+
+We want to go very good, cimple plots
+
+```{r}
+# absolute values
+absoluteT=table(eduwa$LocaleType,
+                exclude = 'nothing') #include all values!
+#here you are:
+absoluteT
+```
+
+BY DEFAULT, R will excude issing values, so exclude = 'nothing' gets us the missing values.
+
+missing vals.. political stakeholders dont kno much about math, but they kno how many cities king county has, they know how many counties WA has, when u present simple plot, they just start adding. they ask what happened to the others. 
+
+give a good name to the missing values. unknown. try to find a good name, so when they add everything up, they can determiine those missing things
+
+dataframe$var
+
+next time u are in categorical data, right thing to do is prepare frequency table
+
+absolute count can be transformed into percent or relative frequencies
+```{r}
+# relative values
+prop.table(absoluteT)
+```
+
+we should try using all info possible--good iedea to name the missing values...
+```{r}
+names(absoluteT)[5]='Unknown'
+#this says, change the name of the fifth value in absoluteT table, turn it into unknown
+```
+
+if u want the range of proportons to be in percents, u should do:
+```{r}
+propT=prop.table(absoluteT)*100
+#you get
+propT
+```
+
+pie plot gets criticism. our brain isn't good at decoding exact sanlges, city/suburbs
+
+```{r}
+#the pie plots the table:
+pie(absoluteT)
+```
+
+try avoiding them except for 2 values, but if it's close u might not see the difference.
+
+```{r}
+#load ggplot
+library(ggplot2)
+```
+
+absolute T is not a dataframe, ggplot require us t ipnput a dataframe, otherise they wont understand, if u have the table of coutns/freqnency table, command, output of command table is not a data frame, is frequency table
+
+First, turn the frequency table into a data frame
+```{r}
+# as data frame
+(tableFreq=as.data.frame(absoluteT))
+```
+
+if u dont do anything, those are the dataframe column names, when u input that into ggplot, they will use those names. u have 2 options, you can change the names in GGplot later, or u can change it now in the data frame itself.
+
+it is rly up 2 u, 
+```{r}
+#renaming data frame columns.
+names(tableFreq)=c("Locale","Count")
+#adding percents
+#add as.vector so ggplot doesn't complain later
+tableFreq$Percent=as.vector(propT)
+#then you have:
+tableFreq
+```
+
+what is the idea of ggplot? ggplot tells u, i could give u all the power u want to customize the plot as much as u want. the good things is u can do it step by step. it is, as the name implies, you can mke a simple sentence, and you can increase the grammar, make tit mrore complex.
+
+Create the BASE object, which is not a plot, just transforming the main variables
+```{r}
+#base GGPLOT2 starts with a "base", telling WHAT VARIABLES TO PLOT
+base= ggplot(data = tableFreq, 
+             aes(x = Locale,
+                 y = Count)) 
+```
+base is telling ggplot what data frame ur gonna use, and what values u gonna plot
+
+once u have the base plot, you can slowly make the base plot more and more complex.
+
+aesthetics is what your actually going to be using in the plot
+
+x is the locale, y is the count
+
+geombar inherits the aesthetics from the base, geombar knows because it is inherited int he information that is coming from the base.
+
+stat = identity, means just use whatever u find. 
+
+```{r}
+plot1 = base + geom_bar(fill = "gray",
+                        stat = 'identity')
+plot1
+```
+
+u made a frequency table, and then u turned the frequency table into a dataframe, when u are here, u should be relieved. from there, everything else can be added.
+
+you have the default bar plot now, from here, everything else can be added. 
+
+You have a default bar plot now. From here, you start adding more layers that will change the default.
+
+```{r}
+#adding titles
+titleText='Where are Public Schools located in WA in 2019?'
+sourceText='Source: US Department of Education'
+
+plot2 = plot1 + labs(title=titleText,
+                     x =NULL, 
+                     y = NULL,
+                     caption = sourceText) 
+plot2
+```
+
+
+```{r}
+base= ggplot(data = tableFreq, 
+             aes(x = Locale,
+                 y = Percent)) 
+
+plot1 = base + geom_bar(fill ="gray",
+                        stat = 'identity') 
+
+plot2 = plot1 + labs(title=titleText,
+                     x =NULL, 
+                     y = NULL,
+                     caption = sourceText)
+
+plot3 = plot2 + geom_hline(yintercept = 25, #where
+                           linetype="dashed", 
+                           size=1.5, #thickness
+                           alpha=0.5) #transparency
+plot3
+```
+
+adding a reference line for what is above and below, 
+
+Customize the vertical axes
+
+load scales
+```{r}
+library(scales) # for "unit_format""
+```
+
+```{r}
+#customize Y axis
+plot4 = plot3 + 
+  scale_y_continuous(breaks=c(0,10, 25,40),
+        limits = c(0, 40), 
+        labels=unit_format(suffix = '%')) 
+plot4
+```
+
+shows where the breaks are
+shows the upper and lower limits
+creates blabels for the unit format, a suffix that is a percent
+
+```{r}
+#positions: 0 left / 1 right / 0.5 center
+plot5 = plot4 + 
+  theme(plot.caption = element_text(hjust = 0), 
+      plot.title = element_text(hjust = 0.5))
+plot5
+```
+
+the plot captaion, where to horizontally adjust where the source text is
+plot title, where to put the title of the thing
+
+
+
+Now there is a thing called THEME
+
+annotating the bars, would u like these values in these bars
+
+```{r}
+paste0(round(tableFreq$Percent,2), '%')
+```
+paste0 is combining two different things, roudnig the frequency table to 2 decimal points, and then adding percent.
+
+```{r}
+# createing labels:
+LABELS=paste0(round(tableFreq$Percent,2), '%')
+###
+plot6 = plot5 + geom_text(vjust=0, #hjust if flipping
+                          size = 5,
+                          aes(y = Percent ,
+                              label = LABELS))
+plot6#+ coord_flip() # wanna flip the plot?
+```
+
+dispersion is not applicable to nominal data
+
+it can be good to order the bar plots by height.
+
+```{r}
+tableFreq=tableFreq[order(tableFreq$Percent),]
+# then:
+tableFreq
+```
+
+let's save the order of locale
+```{r}
+(localesOrd=tableFreq[order(tableFreq$Percent),'Locale'])
+```
+
+```{r}
+# redo:
+LABELS=paste0(round(tableFreq$Percent,2), '%')
+base= ggplot(data = tableFreq, 
+             aes(x = Locale,y = Percent)) 
+## adding these to base
+base= base + scale_x_discrete(limits=localesOrd) 
+base= base + theme_classic()
+##
+plot1 = base + geom_bar(fill ="gray",
+                        stat = 'identity') 
+plot2 = plot1 + labs(title=titleText,
+                     x =NULL, 
+                     y = NULL,
+                     caption = sourceText)
+plot3 = plot2 + geom_hline(yintercept = 25, 
+                           linetype="dashed", 
+                           size=1.5, 
+                           alpha=0.5)
+plot4 = plot3 + scale_y_continuous(breaks=c(0,25,50),
+                                 limits = c(0, 50),
+                                 # expand = c(0, 0), #try?
+                            labels=unit_format(suffix = '%')) 
+
+plot5 = plot4 + theme(plot.caption = element_text(hjust = 0),
+                      plot.title = element_text(hjust = 0.5))
+
+
+plot6 = plot5 + geom_text(vjust=0, #hjust if flipping
+                          size = 6,#fontface = "bold",
+                          aes(y = Percent,
+                              label = LABELS))
+plot6 #+ coord_flip() # wanna flip the plot?
+```
+
+you can explore alternate visuals, use a geom_segment here rather than geom_bar.
+
+differences is in the height, 
+
+Lolipop plot
+```{r}
+#familiar
+base = ggplot(tableFreq, aes(Locale,Percent))
+#by default, with aes, first value is X, second value is y. 
+base = base + theme_classic()
+base = base + scale_x_discrete(limits=localesOrd) 
+#new:geom_segment
+lolliplot1=base + geom_segment(aes(y = 0, 
+                                   x = Locale, 
+                                   yend = Percent, 
+                                   xend = Locale), 
+                               color = "grey50") 
+lolliplot1
+```
+
+add the candy lol
+```{r}
+lolliplot2=lolliplot1 + geom_point(size=5)
+lolliplot2
+```
+
+```{r}
+# new variable
+tableFreq$gap=tableFreq$Percent-25
+tableFreq
+```
+
+```{r}
+base = ggplot(tableFreq, aes(x=Locale,
+                             y=gap)) #change
+base = base + theme_classic()
+base = base + scale_x_discrete(limits=localesOrd)
+
+lolliplot1=base + geom_segment(aes(y = 0,
+                                   yend = gap, #change
+                                   x = Locale,
+                                   xend = Locale), 
+                               color = "gray") 
+lolliplot2 = lolliplot1 + geom_point()
+lolliplot2
+```
+
+this is the gap between the percent and 25 percent. you can use that with the idea of it dropping or increasing.
+
+add some color now
+```{r}
+# a new column for color
+tableFreq$PositiveGap=ifelse(tableFreq$gap>0,"Yes","No")
+tableFreq
+```
+
+adding color
+```{r}
+# add new aesthetics 'color'
+base = ggplot(tableFreq, aes(x=Locale,
+                             y=gap,
+                             color=PositiveGap))#here 
+base = base + theme_classic()
+base= base + scale_x_discrete(limits=localesOrd)
+
+lolliplot1=base + geom_segment(aes(y = 0, 
+                                   yend = gap, 
+                                   x = Locale, 
+                                   xend = Locale), 
+                               color = "gray") 
+ 
+lolliplot2 = lolliplot1 + geom_point()
+
+lolliplot2
+```
+
+
+ggplot will use as many colors are there are levels there
+
+maybe add a label in aes
+```{r}
+base = ggplot(tableFreq, aes(x=Locale,y=gap,
+                             color=PositiveGap,
+                             label = round(gap,3))) #label
+
+base = base + theme_classic()
+base= base + scale_x_discrete(limits=localesOrd)
+
+lolliplot1=base + geom_segment(aes(y = 0, yend = gap, 
+                                   x = Locale, xend = Locale), 
+                               color = "gray") 
+
+lolliplot2=lolliplot1 + geom_point() 
+
+lolliplot2 + geom_text() 
+```
+
+we can nudge the text to the right
+```{r}
+lolliplot3= lolliplot2 + geom_text(nudge_x=0.5,#to the right
+                                   show.legend = FALSE) 
+lolliplot3
+```
+
+positive gap or negative gap here.
+
+adding the reference line
+```{r}
+lolliplot4 = lolliplot3 + geom_hline(yintercept = 0)
+lolliplot4
+```
+
+but we can now get rid of shit lol
+```{r}
+# calling "element_blank()"
+lolliplot5 = lolliplot4 + theme(axis.ticks.y = element_blank(),
+                                axis.title.y = element_blank(),
+                                axis.line.y = element_blank(),
+                                axis.text.y = element_blank())
+lolliplot5
+```
+
+Less elements:
+```{r}
+# more "element_blank()"
+
+lolliplot6=lolliplot5 + theme(axis.ticks.x = element_blank(),
+                                axis.title.x = element_blank(),
+                                axis.line.x = element_blank()
+                              )
+lolliplot6 
+```
+
+
+
+
+
+move the legend INTO the graph
+```{r}
+lolliplot7= lolliplot6 + theme(legend.position = c(0.8,0.4),
+                               legend.background = element_rect(fill='grey95'))
+lolliplot7 
+```
+
+```{r}
+lolliplot8 = lolliplot7 +  geom_label(aes(label=localesOrd),
+                                      color ='black ',
+                                      size =3,
+                                      y=0,
+                                      show.legend = FALSE ) +
+             theme(axis.text.x = element_blank())
+lolliplot8
+```
+
+
+
+##visualization for ordinal variables
+
+use var that tells us highest grade offered in a school
+
+```{r}
+table(eduwa$High.Grade,exclude = 'nothing')
+```
+
+frequency tbale as adat frame
+```{r}
+frqTabO=as.data.frame(prop.table(table(eduwa$High.Grade)))
+names(frqTabO)=c('grade','pct')
+frqTabO
+```
+
+u can use ggplot now
+```{r}
+base = ggplot(frqTabO,aes(x=grade,y=pct))
+base + geom_bar(stat = 'identity')
+```
+
+but x ars have ORDER, increasing level in the values
+```{r}
+# boxplots do not use frequency tables
+
+# "as.numeric" produces turns levels of the factor into numbers
+basebox1 = ggplot(eduwa, aes(y=as.numeric(High.Grade))) 
+box1 = basebox1 + geom_boxplot() + coord_flip() # to show it horizontally
+
+box1
+```
+
+u dont use box plot to perceive counts, yu use it to perceive symmetry, distribution
+
+```{r}
+# the labels use the original ordinal levels
+ordLabels= levels(eduwa$High.Grade)
+#creates an object that is ordinal levels, made from the variable values in dataset eduwa, variable high.grade
+
+box2 = box1 + scale_y_continuous(labels=ordLabels,breaks=1:15)
+#when u say breaks, you are saying that there are breaks from 1 to 15
+box2
+```
+
+boxplot good for a technical report, but not for mass audience
+
+
+
+PROJECT, maybe u dont have a categorical varable, nominal or ordinatl.
+
+if u dont have it no problem, I can show u an example, how any ppl are getting free lunch in each school, it's a number, but make categorial values fro umbers, in INTERVALS.
+
+
+you cn create categorical variables from cuts. 
+```{r}
+summary(eduwa$Free.Lunch)
+```
+
+
+```{r}
+eduwa$Free.LunchGroup=cut(eduwa$Free.Lunch,
+                          breaks = c(0,100, 250, 500,1000,2000),
+                          labels = c("100 and below","101-250","251-500","501-1000","1001 and above"))
+```
+
+new variable has this table:
+```{r}
+table(eduwa$Free.LunchGroup)
+```
+
+
+BEfore ext class, you work you contact him if you have any issues. at least, cut as told u if u do the basic one. 
+
+once you have every plot ready, the dashboard is not rocket science, it is just waiting for the plot.
+
+get the college variable, see what u can do.
+
+
+
+

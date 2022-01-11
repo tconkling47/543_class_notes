@@ -1,0 +1,3 @@
+"0","# a new column for color"
+"0","tableFreq$PositiveGap=ifelse(tableFreq$gap>0,""Yes"",""No"")"
+"0","tableFreq"

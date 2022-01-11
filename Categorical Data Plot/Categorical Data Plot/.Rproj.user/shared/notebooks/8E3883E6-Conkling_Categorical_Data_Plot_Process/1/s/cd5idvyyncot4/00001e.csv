@@ -1,0 +1,8 @@
+"0","#create labels for the bars"
+"0","LABELS=paste0(round(tableFreq$Percent,2), '%')"
+"0",""
+"0","plot5 = plot4 + geom_text(vjust=1.1, "
+"0","                          size = 5,"
+"0","                          aes(y = Count,"
+"0","                              label = LABELS))"
+"0","plot5"
