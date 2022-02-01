@@ -1,0 +1,6 @@
+"0","colleges_state <- college_scorecard_19_20 %>%"
+"0","  select(INSTNM, CITY, STABBR) %>%"
+"0","  mutate(college_count = 1)"
+"0","colleges_by_state <- aggregate(data=colleges_state,"
+"0","                         college_count~STABBR,"
+"0","                         FUN=sum)"

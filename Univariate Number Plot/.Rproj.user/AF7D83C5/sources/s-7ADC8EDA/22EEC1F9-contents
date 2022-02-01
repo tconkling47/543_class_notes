@@ -1,0 +1,492 @@
+<br> 
+<center><img src="http://i.imgur.com/sSaOozN.png" width="500"></center>
+
+
+## Course: VISUAL ANALYTICS FOR POLICY AND MANAGEMENT
+
+### Prof. José Manuel Magallanes, PhD
+
+* Visiting Professor of Computational Policy at Evans School of Public Policy and Governance, and eScience Institute Senior Data Science Fellow, University of Washington.
+* Professor of Government and Political Methodology, Pontificia Universidad Católica del Perú. 
+
+
+_____
+<a id='TOC'></a>
+
+# Tabular data: Univariate Numerical
+
+_____
+
+1. [Counting](#part1)
+
+2. [Measuring](#part2)
+
+
+_____
+
+
+
+Let's load the data we used for the last session:
+
+```{r getData, eval=FALSE}
+link='https://github.com/EvansDataScience/data/raw/master/eduwa.rda'
+
+#getting the data TABLE from the file in the cloud:
+load(file=url(link))
+```
+
+<a id='part1'></a>
+
+## Data from Counting
+
+Counting expresses numerical values. They could be represented with bar plots if their frequency table had few discrete values, but that is not the case. For example, the variable _Reduced.Lunch_ informs how many kids there are in each school that have that lunch for a reduced price. We have more than 2000 schools, so it is almost impossible to have that few different values. This is how many different values we have:
+
+```{r unique, eval=FALSE}
+# how many unique values
+length(unique(eduwa$Reduced.Lunch))
+#what's the length of a vector that lists all the unique values of this dataset
+```
+
+There are too many different values. Then, the bar plot is not a good idea (and neither a frequency table), as the bar plot produces a bar for each unique value in the data, counting how many times this value appeared:
+
+```{r, eval=FALSE}
+lunchDF=as.data.frame(table(eduwa$Reduced.Lunch))
+#lunchDF data frame is a table that has one variable. The table command does a count function.
+names(lunchDF)=c("Beneficiaries","Count")
+#change the name of the two columns. Number of beneficiaries in a school, number of schools
+
+
+library(ggplot2)
+base1=ggplot(data=lunchDF, aes(x=Beneficiaries,Count))
+bar1=base1+geom_bar(stat = "identity")
+bar1
+```
+
+
+As we have many values, it is difficult to share a clear insight. However, we could try a different idea:
+
+```{r, eval=FALSE}
+# sum of reduced lunches given per county
+CountyCount_LR=aggregate(data=eduwa,
+                         Reduced.Lunch~County,
+                         FUN=sum)
+#we are making a pivot table, summed on the county level. The data is eduwa, variable is reduced lunch, by founty
+#function is sum (could be mean, median, et)
+```
+
+Now you have much less cases, just 39. Let's order by count in decreasing order:
+
+```{r, eval=FALSE}
+# order and minus (-) for decreasing
+CountyCount_LR=CountyCount_LR[order(-CountyCount_LR$Reduced.Lunch),]
+#this orders the dataset in decending order (-) on the reduced lunch variable
+head(CountyCount_LR,10)
+```
+
+Let's add the percent, and cummulative percent and cummulative count:
+
+```{r, eval=FALSE}
+#These functions add new columns to the dataset (could also be mutate I think)
+CountyCount_LR$Percent=CountyCount_LR$Reduced.Lunch/sum(CountyCount_LR$Reduced.Lunch)
+#, the percent is reduced lunch divided by the sum of them all of everyboyd
+CountyCount_LR$PercentCum=cumsum(CountyCount_LR$Percent)
+# cumulative sum is cumsum function. cumulative percent
+CountyCount_LR$Reduced.Lunch.Cum=cumsum(CountyCount_LR$Reduced.Lunch)
+#cumulative sum
+# see some:
+head(CountyCount_LR,20)
+```
+
+
+
+Let's plot the cummulative count as a barplot:
+
+```{r, eval=FALSE}
+
+base2=ggplot(data=CountyCount_LR,
+             aes(x=County,Reduced.Lunch.Cum)) + theme_classic()
+base3=base2+scale_x_discrete()
+bar2=base3  +geom_bar(stat = "identity")
+bar2=bar2 + coord_flip() 
+bar2
+
+##we want it ordered by the numbers, but by default it's ordered by the alphabetical 
+```
+
+The previous plot is NOT informative, this is better:
+
+```{r, eval=FALSE}
+# altering previous base3
+base3=base2+scale_x_discrete(limits=CountyCount_LR$County)
+#scale_x_discrete. ggplot respects the order of the county in that dataframe, you cannot do that if u cannot change the parameters, scale_x_discrete. changes which goes first. we are accumulating.
+bar2=base3  +geom_bar(stat = "identity")
+bar2=bar2 + coord_flip() 
+bar2
+
+
+
+```
+
+We could redo **bar2** by using the other columns to show the Pareto principle:
+```{r, eval=FALSE}
+bar2=base3  +geom_bar(stat = "identity",color='grey90',
+                      aes(fill=PercentCum<0.8),
+                      show.legend = F)
+bar2=bar2 + coord_flip()
+
+bar2
+#Pareto principle, geombar, fill the bar color by the percent cumulative, if it is below 80%, you could have one color, if not you would have another color
+
+#from the whole universe of counties, you get 80% of the reduced lunch just from that small number of counties. that's the insight that you are given.
+```
+
+Above, we just altered the _border_ of the bars (color); and we told ggplot to fill the bars _conditionally_. The default fill color was chosen. If you want to customize the fill color, do this:
+
+```{r, eval=FALSE}
+# I only need one fill color, that is why I put 'NA":
+bar2=bar2 +scale_fill_manual(values=c(NA,"grey90"))
+bar2
+
+#this can change the different colors. We can put whatever we want in there. 
+```
+
+```{r, eval=FALSE}
+# I only need one fill color, that is why I put 'NA":
+bar2=bar2 +scale_fill_manual(values=c("grey70","orange"))
+bar2
+
+#this can change the different colors. We can put whatever we want in there. 
+
+#pareto principle, you want to add from the larger ones first. How many of the total are the from X of these
+```
+
+The last version tries to highlight some counties. This last step could help more:
+
+```{r, eval=FALSE}
+# this is a condition outside ggplot.
+# it says what counties add to 80%
+counties80=CountyCount_LR[CountyCount_LR$PercentCum<0.8,"County"]
+#this is a vector of the counties that add to that 80% cumulative count
+
+# now we use that here, to alter the face of text:
+bar2=bar2 + theme(axis.text.y = element_text(face=ifelse(CountyCount_LR$County%in%counties80,"bold","plain"),size=9))
+
+#making the vector of names of counties that constitute the 80% of values bold, tho it's not officially supported.
+```
+
+The last plot shows the counties that altogether sum the 80% of reduced lunches offer in the state of Washington. Of course, there is a propeo pareto plot for this cases:
+
+```{r}
+install.packages('ggQC')
+```
+
+
+
+```{r, eval=FALSE}
+
+library(ggQC) # install this previously
+
+base4=ggplot(data=CountyCount_LR,
+             aes(x=County,y=Reduced.Lunch)) + theme_classic()
+#this creates the barplot of the reduced plot. With so many counts, we do the cumulative. 
+pare1=base4 + stat_pareto() 
+#this stat_pareto creates the increasing count graph
+pare1
+
+```
+
+That was fast. However, some extra work might be needed:
+
+```{r, eval=FALSE}
+# computing intercepts
+interX=length(counties80)
+interY=max(CountyCount_LR$Reduced.Lunch.Cum)*0.8
+
+# annotating intercepts
+pare2=pare1 + geom_vline(xintercept = interX,
+                         linetype="dashed", color='green') 
+pare2=pare2 + geom_hline(yintercept =interY,
+                         linetype="dashed", color='green') 
+pare2 + theme(axis.text.x = element_text(angle = 30, hjust = 1,face=ifelse(CountyCount_LR$County%in%counties80,"bold","plain")))
+
+#adding a moment where it goes to 80% at first.
+```
+
+In your data, everything starts with COUNTS!!!!!!!
+
+
+All these plots give us an idea of **distribution**: how lunches are distributed among counties. 
+
+Let's pay attention now to the values instead of the cases. Given the variety of values we need to organize the data into _intervals_. However, when you have a numerical variable you should keep in mind:
+
+* What is the representative value? Generally the mean, or median. How good is the representative value? You need some measure of dispersion. For the mean you have the **standard deviation**, and for the median the **median absolute deviation**. 
+
+* Does the shape of the distribution differs from a _normal_ distribution? If there is asymmetry, is it big enough to show outliers? You need some  measure of symmetry and shape (kurtosis).
+
+
+First, you should take a look at the statistical information:
+
+```{r summary, eval=FALSE}
+summary(eduwa$Reduced.Lunch)
+```
+
+##Before doing plot, take a lot at the distribution statistics. some overrepresented schools
+
+The **summary** command can be suplemented with:
+
+```{r, eval=FALSE}
+# standard deviation:
+sd(eduwa$Reduced.Lunch,na.rm = T)
+```
+
+```{r, eval=FALSE}
+# median absolute deviation:
+#The mean absolute deviation of a dataset is the average distance between each data point and the mean
+mad(eduwa$Reduced.Lunch,na.rm = T)
+```
+
+```{r}
+install.packages('DescTools')
+```
+
+
+```{r, eval=FALSE}
+# asymmetry
+library(DescTools)
+Skew(eduwa$Reduced.Lunch,
+     na.rm = T,
+     conf.level = 0.95,
+     ci.type = "bca",
+     R=2500)
+#computing skewness 2500 times, confidence interval of 95%
+```
+
+##POSITIVE SKEW means that it has a right tail. 
+
+```{r, eval=FALSE}
+# shape
+#library(DescTools)
+Kurt(eduwa$Reduced.Lunch,
+     na.rm = T,conf.level = 0.95,
+     ci.type = "bca",R=2500)
+#measures the kurtosis
+```
+
+
+#Kurtosis is a measure of the combined weight of a distribution's tails relative to the center of the distribution. 
+
+#bigger the number, more spread it is. 
+
+#if the skewness told you that you had a tail to the right, and the kursosis told you that the tail is very long. so, you know now what to expect from your 
+
+Numerical data use **histograms** and also **boxplots**. With the values computed, can you guess how a histogram or a boxplot would look?
+
+For the **histogram** you can use the element **geom_histogram()** :
+
+```{r GGLikeBase,eval=FALSE}
+#ggplot
+WIDTH=10
+library(ggplot2)
+base= ggplot(eduwa,aes(x = Reduced.Lunch))  
+h1= base + geom_histogram(binwidth = WIDTH) 
+h1 
+```
+#this skewness (big tail) and kurtosis (wide spread) tells us what we need to know wrt what the curve looks like.
+
+
+The histogram looks like a bar plot. In both cases the height of the bars represent counts, but the bars in the histogram are consecutive while the bases of the bars are numeric intervals (**binwidth** informs the length of the intervals). 
+
+You can annotate, for example, with one of the central measures:
+
+```{r, eval=FALSE}
+MEAN=summary(eduwa$Reduced.Lunch)[4]
+#this creates a value that is the mean, which is the 4th number in this summary.
+h1+ geom_vline(xintercept = MEAN)
+#this puts the line here
+```
+
+
+What else would you do here to make a good plot?
+
+
+The boxplot can also be used in these data:
+
+```{r, eval=FALSE}
+base= ggplot(eduwa,aes(y = Reduced.Lunch))  
+b1= base + geom_boxplot() 
+b1 +coord_flip()
+```
+
+The statistical summary includes some the values shown in the boxplot:
+
+```{r, eval=FALSE}
+summary(eduwa$Reduced.Lunch)
+```
+
+I can keep these values without the count of NAs:
+```{r, eval=FALSE}
+(statVals=summary(eduwa$Reduced.Lunch,digits = 3)[1:6])
+```
+
+
+Let me put some of those values in the boxplot y-axis:
+
+```{r, eval=FALSE}
+library(magrittr)
+statVals=statVals%>%as.vector() 
+
+base= ggplot(eduwa,aes(y = Reduced.Lunch))  
+b1= base + geom_boxplot() 
+b1=b1 +coord_flip()
+b1=b1+ scale_y_continuous(breaks = statVals)
+b1
+```
+
+
+This boxplot shows outliers, that means there is an upper threshold. I can get that value using the interquartile range, which is:
+
+```{r, eval=FALSE}
+# difference between q3 and q1:
+(theIQR=IQR(eduwa$Reduced.Lunch,na.rm = T))
+```
+
+Then, you simply add to the top and bottom quartile the IQR multiply by a factor (typically 1.5) to get the upper threshold:
+```{r, eval=FALSE}
+(upperT=summary(eduwa$Reduced.Lunch)[[5]] + theIQR*1.5)
+```
+
+Knowing the upper threshold, I can compute the amount of upper outliers:
+```{r, eval=FALSE}
+sum(eduwa$Reduced.Lunch>upperT,na.rm = T)
+```
+
+I can annotate my boxplot with this value:
+
+```{r, eval=FALSE}
+annotation=paste0('Threshold:',upperT)
+b1 = b1 + geom_hline(yintercept = upperT,
+                     color='grey8',
+                     linetype="dotted",
+                     size=2) 
+b1=b1 + annotate(geom = 'text',
+              label=annotation,
+              y = upperT+5,
+              x=0.2,
+              angle=90)
+b1
+```
+
+
+You can not see clearly the horizontal values, and the vertical values are confusing, then:
+
+```{r, eval=FALSE}
+b1x=b1+ theme(axis.text.y = element_blank(),
+          axis.ticks.y = element_blank(),
+          axis.title.y = element_blank())
+b1x + theme(axis.text.x = element_text(angle = 40,size = 8,vjust = 0.5))
+```
+
+In general, measurements and counts are prone to have outliers. It is not common to speak about outliers in ordinal data since they have few levels. From what I just said, the subjective side of finding outliers lies in the decision of **what "normal" means**. In the case of the boxplot, the decision has been to accept as normal the values that have a *prudent distance* from the first or last quartile. The distance chosen was 1.5 times the difference between the quartiles (a.k.a. Interquartle Range or **IQR**). Then, if a outlier is found, the whisker ends in a position different than the actual minimum or maximal value of the data.
+
+[Go to table of contents.](#TOC)
+
+<a id='part2'></a>
+
+### Measurement
+
+A simplistic idea of measurement tells you the times a particular unit is present in the unit of analysis; which allows for the presence of decimal places. There are variables that can have negative values.
+
+Let's analyze the variable _Student.Teacher.Ratio_:
+
+```{r summaryMeans, eval=FALSE}
+summary(eduwa$Student.Teacher.Ratio)
+```
+
+##If there is an opportunty to do counts, do counts
+
+
+Notice that the maximum value is very far from the mean and the median, this announces the presence of outliers:
+
+```{r, eval=FALSE}
+base=ggplot(eduwa) + theme_classic()
+box2=base + geom_boxplot(aes(y=Student.Teacher.Ratio))
+box2 + coord_flip()
+```
+
+
+The presence of outliers may mean the existence of **inequality**. Let's try the Lorenz curve:
+
+```{r}
+install.packages('gglorenz')
+```
+
+
+```{r, eval=FALSE}
+library(gglorenz)
+
+base5= ggplot(eduwa, aes(x = Reduced.Lunch)) + 
+        theme_classic() 
+# plot Lorenz curve
+lorenz=base5 + stat_lorenz()
+#
+lorenz
+```
+
+
+Some extra work is needed:
+
+```{r, eval=FALSE}
+
+#for titles
+HorizontalTitle="Cummulative Percent of Schools"
+VerticalTitle="Cummulative percent of beneficiaries"
+plotTitle="What share of schools \ncount for the lower 50% of the beneficiaries?"
+sourceText="Source: US Department of Education"
+
+# text for annotation
+## computing
+gini=DescTools::Gini(eduwa$Reduced.Lunch,na.rm = T)
+## pasting message 
+GINItext=paste("Gini:",round(gini,3))
+
+# diagonal
+lorenz= lorenz + geom_abline(linetype = "dashed") 
+#
+# annotations
+## vertical and horizontal lines
+lorenz= lorenz + geom_vline(xintercept = 0.8,
+                            color='grey80',
+                            lty='dotted') + 
+                 geom_hline(yintercept = 0.5,
+                            color='grey80',
+                            lty='dotted') 
+#
+# changing default axis tick values, positions and aspect
+lorenz= lorenz + scale_y_continuous(breaks = c(0,0.5,0.8),
+                                    position = 'right') + #position
+                 scale_x_continuous(breaks = c(0,0.5,0.8)) + 
+                 coord_fixed() #aspect
+# annotating: adding Gini Index value 
+lorenz= lorenz + annotate(geom="text",
+                          x=0.4, y=0.25,size=3,
+                          label=GINItext)
+# texts
+lorenz= lorenz +  labs(x = HorizontalTitle,
+                       y = VerticalTitle,
+                       title = plotTitle,
+                       caption = sourceText)
+lorenz
+
+```
+
+The more the Lorenz curve approaches the diagonal, the more equality (and the smaller the Gini index). 
+
+#the imaginary diagoal is the equal share amount, the closer the curve is 
+
+Exercise:
+
+For the final project, you should choose one of the plots shown here. Adapt  one of the plots in this session, complete it with the missing elements, and make any improvement you consider important.
+
+
+_____
+[Go to table of contents.](#TOC)

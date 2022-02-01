@@ -1,0 +1,7 @@
+"0","```r
+```r
+plot1 = base + geom_bar(fill = \#B1CED0\,
+                        stat = 'identity')
+plot1
+```
+```"

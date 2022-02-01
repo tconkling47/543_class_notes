@@ -1,0 +1,11 @@
+"0","```r
+#create labels for the bars
+LABELS=paste0(round(tableFreq$Percent,2), '%')
+
+plot5 = plot4 + geom_text(hjust=1.05, 
+                          size = 5,
+                          aes(y = Count,
+                              label = LABELS))
+plot5 = plot5 + coord_flip()
+plot5
+```"

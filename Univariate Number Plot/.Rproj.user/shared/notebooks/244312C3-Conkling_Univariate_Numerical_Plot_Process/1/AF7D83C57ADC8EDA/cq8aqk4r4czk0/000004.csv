@@ -1,0 +1,6 @@
+"0","colleges_by_state$percent=colleges_by_state$college_count/sum(colleges_by_state$college_count)"
+"0","colleges_by_state$percentcum=cumsum(colleges_by_state$percent)"
+"0","colleges_by_state$Colleges.Cum=cumsum(colleges_by_state$college_count)"
+"0",""
+"0","# see some:"
+"0","head(colleges_by_state,20)"

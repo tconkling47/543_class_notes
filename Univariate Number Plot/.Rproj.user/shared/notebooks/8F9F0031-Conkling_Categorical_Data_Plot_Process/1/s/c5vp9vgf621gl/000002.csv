@@ -1,0 +1,7 @@
+"0","```r
+#Add a couple final aesthetic touches
+plot6 = plot5 + theme(
+    plot.title = element_text(face = 'bold', size = 15)
+  ) 
+plot6
+```"

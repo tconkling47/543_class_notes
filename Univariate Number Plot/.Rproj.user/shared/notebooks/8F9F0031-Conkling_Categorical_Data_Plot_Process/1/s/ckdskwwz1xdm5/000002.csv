@@ -1,0 +1,4 @@
+"0","```r
+#add a theme
+base = base + theme_classic()
+```"

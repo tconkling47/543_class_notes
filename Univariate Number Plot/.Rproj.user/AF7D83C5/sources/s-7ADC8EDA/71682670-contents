@@ -1,0 +1,75 @@
+---
+title: "Conkling_Univariate Numerical Plot"
+output: html_notebook
+---
+
+#This is making a univariate plot with numeric data
+
+```{r}
+#Load College Scorecard
+library(readxl)
+college_scorecard_19_20 <- read.csv("C:/Users/thoma/OneDrive/Desktop/543_coursework/Univariate Number Plot/college scorecard_19-20.csv")
+View(college_scorecard_19_20)
+```
+```{r}
+#load ggplot
+library(ggplot2)
+```
+
+```{r}
+#load tidyvere
+library(tidyverse)
+```
+
+##Creating a piot table that lists the number of higher education institutions in a state/territory
+```{r}
+colleges_state <- college_scorecard_19_20 %>%
+  select(INSTNM, CITY, STABBR) %>%
+  mutate(college_count = 1)
+colleges_by_state <- aggregate(data=colleges_state,
+                         college_count~STABBR,
+                         FUN=sum)
+```
+
+
+##Put in decreasing order
+```{r}
+colleges_by_state=colleges_by_state[order(-colleges_by_state$college_count),]
+head(colleges_by_state,10)
+```
+
+##Add percent, cummulative percent, and cummulative count:
+
+```{r, eval=FALSE}
+colleges_by_state$percent=colleges_by_state$college_count/sum(colleges_by_state$college_count)
+colleges_by_state$percentcum=cumsum(colleges_by_state$percent)
+colleges_by_state$Colleges.Cum=cumsum(colleges_by_state$college_count)
+
+#see if it works
+head(colleges_by_state,20)
+```
+
+#Initial graph with the states in ascending order of the total
+```{r}
+base = ggplot(data=colleges_by_state,
+              aes(x=STABBR, Colleges.Cum)) + theme_classic()
+base2 = base + scale_x_discrete(limits = colleges_by_state$STABBR)
+bar2 = base2 + geom_bar(stat = "identity")
+bar2 = bar2 + coord_flip()
+bar2
+```
+
+
+
+```{r}
+# altering previous base3
+base3=base2+scale_x_discrete(limits=CountyCount_LR$County)
+#scale_x_discrete. ggplot respects the order of the county in that dataframe, you cannot do that if u cannot change the parameters, scale_x_discrete. changes which goes first. we are accumulating.
+bar2=base3  +geom_bar(stat = "identity")
+bar2=bar2 + coord_flip() 
+bar2
+```
+
+
+
+

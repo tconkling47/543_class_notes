@@ -1,0 +1,4 @@
+"0","# how many unique values"
+"0","length(unique(eduwa$Reduced.Lunch))"
+"2","Error in unique(eduwa$Reduced.Lunch) : object 'eduwa' not found
+"

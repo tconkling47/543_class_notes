@@ -1,0 +1,4 @@
+"0","```r
+#export image
+ggsave('Conkling_Categorical_Graph_PUBPOL543.jpg', device = 'jpeg', width = 8, height = 6, dpi = 300  )
+```"

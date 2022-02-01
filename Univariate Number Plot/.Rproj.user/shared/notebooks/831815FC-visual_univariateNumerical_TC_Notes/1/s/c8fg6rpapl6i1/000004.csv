@@ -1,0 +1,13 @@
+"0","lunchDF=as.data.frame(table(eduwa$Reduced.Lunch))"
+"0","#lunchDF data frame is a table that has one variable. The table command does a count function."
+"0","names(lunchDF)=c(""Beneficiaries"",""Count"")"
+"0","#change the name of the two columns. Number of beneficiaries in a school, number of schools"
+"0",""
+"0",""
+"0","library(ggplot2)"
+"2","Warning:"
+"2"," package ‘ggplot2’ was built under R version 4.0.5
+"
+"0","base1=ggplot(data=lunchDF, aes(x=Beneficiaries,Count))"
+"0","bar1=base1+geom_bar(stat = ""identity"")"
+"0","bar1"

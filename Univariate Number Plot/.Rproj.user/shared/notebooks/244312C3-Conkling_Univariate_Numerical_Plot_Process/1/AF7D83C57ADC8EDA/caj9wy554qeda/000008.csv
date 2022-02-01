@@ -1,0 +1,6 @@
+"0","base = ggplot(data=colleges_by_state,"
+"0","              aes(x=STABBR, Colleges.Cum)) + theme_classic()"
+"0","base2 = base + scale_x_discrete(limits = colleges_by_state$STABBR)"
+"0","bar2 = base2 + geom_bar(stat = ""identity"")"
+"0","bar2 = bar2 + coord_flip()"
+"0","bar2"

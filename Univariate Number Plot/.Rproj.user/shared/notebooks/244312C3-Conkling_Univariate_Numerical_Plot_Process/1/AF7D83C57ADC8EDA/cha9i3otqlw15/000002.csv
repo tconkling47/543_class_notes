@@ -1,0 +1,2 @@
+"0","colleges_by_state=colleges_by_state[order(-colleges_by_state$college_count),]"
+"0","head(colleges_by_state,10)"

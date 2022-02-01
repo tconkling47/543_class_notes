@@ -1,0 +1,10 @@
+"0","```r
+#Load College Scorecard
+library(readxl)
+```"
+"1","Warning: package â€˜readxlâ€™ was built under R version 4.0.5
+"
+"0","```r
+college_scorecard_19_20 <- read.csv(\"C:/Users/thoma/OneDrive/Desktop/543_coursework/Univariate Number Plot/college scorecard_19-20.csv\")
+View(college_scorecard_19_20)
+```"

@@ -1,0 +1,4 @@
+"0","link='https://github.com/EvansDataScience/data/raw/master/eduwa.rda'"
+"0",""
+"0","#getting the data TABLE from the file in the cloud:"
+"0","load(file=url(link))"
